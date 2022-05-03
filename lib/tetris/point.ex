@@ -12,6 +12,6 @@ defmodule Tetris.Point do
   end
 
   def down({x, y}) do
-    {x, y - 1}
+    {x, y + 1}
   end
 end
