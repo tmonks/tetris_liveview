@@ -4,34 +4,36 @@ defmodule TetrisWeb.GameLive do
 
   def mount(_params, _session, socket) do
     :timer.send_interval(500, :tick)
-    {:ok, socket |> new_tetromino}
-  end
 
-  def new_tetromino(socket) do
-    assign(socket, tetro: Tetromino.new_random())
+    {:ok,
+     socket
+     |> new_tetromino()
+     |> show()}
   end
 
   def render(assigns) do
     ~H"""
-      <% {x, y} = @tetro.location %>
+      <% [{x, y}] = @points %>
       <section class="phx-hero">
         <pre>
-          shape: <%= @tetro.shape %>
-          rotation: <%= @tetro.rotation %>
           location: {<%= x %>, <%= y %>}
         </pre>
       </section>
     """
   end
 
-  # def down(socket) do
+  defp new_tetromino(socket) do
+    assign(socket, tetro: Tetromino.new_random())
+  end
+
+  defp show(socket) do
+    assign(socket, points: Tetromino.points(socket.assigns.tetro))
+  end
+
   def down(%{assigns: %{tetro: tetro}} = socket) do
-    # %{tetro: tetro} = socket.assigns
-
-    IO.inspect(tetro, label: "tetro")
-
     socket
-    |> assign(:tetro, tetro |> Tetromino.down())
+    |> assign(:tetro, Tetromino.down(tetro))
+    |> show()
   end
 
   def handle_info(:tick, socket) do
