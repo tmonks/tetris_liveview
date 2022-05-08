@@ -27,8 +27,13 @@ defmodule Tetris.Tetromino do
     %{tetro | rotation: rotate_degrees(tetro.rotation)}
   end
 
-  def points(tetro) do
-    [tetro.location]
+  def points(%{location: {x, y}} = _tetro) do
+    [
+      {x + 1, y},
+      {x + 1, y + 1},
+      {x + 1, y + 2},
+      {x + 2, y + 2}
+    ]
   end
 
   defp random_shape do
