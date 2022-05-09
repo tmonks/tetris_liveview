@@ -18,7 +18,7 @@ defmodule TetrisWeb.GameLive do
         <h1>Welcome to Tetris</h1>
         <%= render_board(assigns) %>
         <pre>
-          location: {<%= x %>, <%= y %>}
+          tetromino: <%= inspect @tetro %>
         </pre>
       </section>
     """
