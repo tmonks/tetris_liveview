@@ -27,14 +27,73 @@ defmodule Tetris.Tetromino do
     %{tetro | rotation: rotate_degrees(tetro.rotation)}
   end
 
-  def points(tetro) do
+  def show(tetro) do
+    tetro
+    |> points()
+    |> Points.move(tetro.location)
+  end
+
+  def points(%{shape: :l}) do
     [
       {2, 1},
       {2, 2},
       {2, 3},
       {3, 3}
     ]
-    |> Points.move(tetro.location)
+  end
+
+  def points(%{shape: :j}) do
+    [
+      {3, 1},
+      {3, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :i}) do
+    [
+      {2, 1},
+      {2, 2},
+      {2, 3},
+      {2, 4}
+    ]
+  end
+
+  def points(%{shape: :o}) do
+    [
+      {2, 2},
+      {3, 2},
+      {2, 3},
+      {3, 3}
+    ]
+  end
+
+  def points(%{shape: :s}) do
+    [
+      {2, 2},
+      {3, 2},
+      {1, 3},
+      {2, 3}
+    ]
+  end
+
+  def points(%{shape: :t}) do
+    [
+      {1, 2},
+      {2, 2},
+      {3, 2},
+      {2, 3}
+    ]
+  end
+
+  def points(%{shape: :z}) do
+    [
+      {1, 2},
+      {2, 2},
+      {2, 3},
+      {3, 3}
+    ]
   end
 
   defp random_shape do

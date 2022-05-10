@@ -49,7 +49,7 @@ defmodule TetrisWeb.GameLive do
   end
 
   defp show(socket) do
-    assign(socket, points: Tetromino.points(socket.assigns.tetro))
+    assign(socket, points: Tetromino.show(socket.assigns.tetro))
   end
 
   def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
