@@ -2,6 +2,8 @@ defmodule TetrisWeb.GameLive do
   use TetrisWeb, :live_view
   alias Tetris.Tetromino
 
+  @rotate_keys ["ArrowDown", " "]
+
   def mount(_params, _session, socket) do
     if connected?(socket) do
       :timer.send_interval(500, :tick)
@@ -16,11 +18,13 @@ defmodule TetrisWeb.GameLive do
   def render(assigns) do
     ~H"""
       <section class="phx-hero">
-        <h1>Welcome to Tetris</h1>
-        <%= render_board(assigns) %>
-        <pre>
-          <%= inspect @tetro %>
-        </pre>
+        <div phx-window-keydown="keystroke">
+          <h1>Welcome to Tetris</h1>
+          <%= render_board(assigns) %>
+          <pre>
+            <%= inspect @tetro %>
+          </pre>
+        </div>
       </section>
     """
   end
@@ -77,7 +81,41 @@ defmodule TetrisWeb.GameLive do
     |> assign(:tetro, Tetromino.down(tetro))
   end
 
+  def right(%{assigns: %{tetro: %{location: {7, _}}}} = socket) do
+    socket
+  end
+
+  def right(%{assigns: %{tetro: tetro}} = socket) do
+    socket
+    |> assign(:tetro, Tetromino.right(tetro))
+  end
+
+  def left(%{assigns: %{tetro: %{location: {-1, _}}}} = socket) do
+    socket
+  end
+
+  def left(%{assigns: %{tetro: tetro}} = socket) do
+    socket
+    |> assign(:tetro, Tetromino.left(tetro))
+  end
+
   def handle_info(:tick, socket) do
-    {:noreply, socket |> down() |> rotate() |> show()}
+    {:noreply, socket |> down() |> show()}
+  end
+
+  def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
+    {:noreply, socket |> rotate()}
+  end
+
+  def handle_event("keystroke", %{"key" => "ArrowRight"}, socket) do
+    {:noreply, socket |> right()}
+  end
+
+  def handle_event("keystroke", %{"key" => "ArrowLeft"}, socket) do
+    {:noreply, socket |> left()}
+  end
+
+  def handle_event("keystroke", _, socket) do
+    {:noreply, socket}
   end
 end
