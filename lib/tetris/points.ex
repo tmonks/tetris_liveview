@@ -15,4 +15,8 @@ defmodule Tetris.Points do
     points
     |> Enum.map(&Point.rotate(&1, degrees))
   end
+
+  def valid?(points) do
+    Enum.all?(points, &Point.in_bounds?/1)
+  end
 end
