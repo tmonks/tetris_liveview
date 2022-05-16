@@ -1,5 +1,5 @@
 defmodule Tetris.Game do
-  defstruct [:tetro, score: 0, junkyard: %{}]
+  defstruct [:tetro, points: [], score: 0, junkyard: %{}]
 
   alias Tetris.{Points, Tetromino}
 
@@ -16,5 +16,18 @@ defmodule Tetris.Game do
       |> Points.valid?()
 
     Tetromino.maybe_move(old, new, valid)
+  end
+
+  def right(game), do: game |> move(&Tetromino.right/1) |> show()
+  def left(game), do: game |> move(&Tetromino.left/1) |> show()
+  def rotate(game), do: game |> move(&Tetromino.rotate/1) |> show()
+
+  def new_tetromino(game) do
+    %{game | tetro: Tetromino.new_random()}
+    |> show()
+  end
+
+  def show(game) do
+    %{game | points: Tetromino.show(game.tetro)}
   end
 end
