@@ -3,6 +3,12 @@ defmodule Tetris.Game do
 
   alias Tetris.{Points, Tetromino}
 
+  def new do
+    __struct__()
+    |> new_tetromino()
+    |> show()
+  end
+
   def move(game, move_fn) do
     old = game.tetro
 
