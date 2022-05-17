@@ -6,9 +6,9 @@ defmodule TetrisWeb.GameLive do
   @rotate_keys ["ArrowDown", " "]
 
   def mount(_params, _session, socket) do
-    # if connected?(socket) do
-    #   :timer.send_interval(500, :tick)
-    # end
+    if connected?(socket) do
+      :timer.send_interval(500, :tick)
+    end
 
     {:ok, new_game(socket)}
   end
@@ -64,37 +64,29 @@ defmodule TetrisWeb.GameLive do
     assign(socket, game: Game.new_tetromino(socket.assigns.game))
   end
 
-  def rotate(%{assigns: %{tetro: tetro}} = socket) do
+  def rotate(%{assigns: %{game: game}} = socket) do
     socket
-    |> assign(:tetro, Tetromino.rotate(tetro))
+    |> assign(:game, Game.rotate(game))
   end
 
-  def down(%{assigns: %{tetro: %{location: {_, 20}}}} = socket) do
+  def down(%{assigns: %{game: %{tetro: %{location: {_, 20}}}}} = socket) do
     socket
     |> new_tetromino()
   end
 
-  def down(%{assigns: %{tetro: tetro}} = socket) do
+  def down(%{assigns: %{game: game}} = socket) do
     socket
-    |> assign(:tetro, Tetromino.down(tetro))
+    |> assign(:game, Game.down(game))
   end
 
-  def right(%{assigns: %{tetro: %{location: {7, _}}}} = socket) do
+  def right(%{assigns: %{game: game}} = socket) do
     socket
+    |> assign(:game, Game.right(game))
   end
 
-  def right(%{assigns: %{tetro: tetro}} = socket) do
+  def left(%{assigns: %{game: game}} = socket) do
     socket
-    |> assign(:tetro, Tetromino.right(tetro))
-  end
-
-  def left(%{assigns: %{tetro: %{location: {-1, _}}}} = socket) do
-    socket
-  end
-
-  def left(%{assigns: %{tetro: tetro}} = socket) do
-    socket
-    |> assign(:tetro, Tetromino.left(tetro))
+    |> assign(:game, Game.left(game))
   end
 
   def handle_info(:tick, socket) do
@@ -102,6 +94,7 @@ defmodule TetrisWeb.GameLive do
   end
 
   def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
+    IO.puts("PIVOT!!")
     {:noreply, socket |> rotate()}
   end
 
