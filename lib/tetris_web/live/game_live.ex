@@ -1,7 +1,6 @@
 defmodule TetrisWeb.GameLive do
   use TetrisWeb, :live_view
   alias Tetris.Game
-  alias Tetris.Tetromino
 
   @rotate_keys ["ArrowDown", " "]
 
@@ -94,7 +93,6 @@ defmodule TetrisWeb.GameLive do
   end
 
   def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
-    IO.puts("PIVOT!!")
     {:noreply, socket |> rotate()}
   end
 
