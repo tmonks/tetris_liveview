@@ -19,41 +19,47 @@ defmodule Tetris.Game do
   end
 
   def move_data(game, move_fn) do
-    old = game.tetro
+    old_tetro = game.tetro
 
-    new =
+    new_tetro =
       game.tetro
       |> move_fn.()
 
     valid =
-      new
+      new_tetro
       |> Tetromino.show()
       |> Points.valid?()
 
-    {old, new, valid}
+    {old_tetro, new_tetro, valid}
   end
 
   def down(game) do
-    # game |> move(&Tetromino.down/1) |> show()
-    {old, new, valid} = move_data(game, &Tetromino.down/1)
+    {old_tetro, new_tetro, valid} = move_data(game, &Tetromino.down/1)
 
-    move_down_or_merge(game, old, new, valid)
+    move_down_or_merge(game, old_tetro, new_tetro, valid)
   end
 
-  def move_down_or_merge(game, _old, new, true = _valid) do
-    %{game | tetro: new}
+  def move_down_or_merge(game, _old, new_tetro, true = _valid) do
+    %{game | tetro: new_tetro}
     |> show()
   end
 
-  def move_down_or_merge(game, old, _new, false = _valid) do
+  def move_down_or_merge(game, old_tetro, _new, false = _valid) do
     game
-    |> merge(old)
+    |> merge(old_tetro)
     |> new_tetromino()
     |> show()
   end
 
-  def merge(game, _old) do
-    game
+  def merge(game, old_tetro) do
+    new_junkyard =
+      old_tetro
+      |> Tetromino.show()
+      |> Enum.map(fn {x, y, shape} -> {{x, y}, shape} end)
+      |> Enum.into(game.junkyard)
+      |> IO.inspect(label: "junkyard")
+
+    %{game | junkyard: new_junkyard}
   end
 
   def right(game), do: game |> move(&Tetromino.right/1) |> show()
