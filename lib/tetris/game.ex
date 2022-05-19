@@ -62,6 +62,11 @@ defmodule Tetris.Game do
     %{game | junkyard: new_junkyard}
   end
 
+  def junkyard_points(game) do
+    game.junkyard
+    |> Enum.map(fn {{x, y}, shape} -> {x, y, shape} end)
+  end
+
   def right(game), do: game |> move(&Tetromino.right/1) |> show()
   def left(game), do: game |> move(&Tetromino.left/1) |> show()
   def rotate(game), do: game |> move(&Tetromino.rotate/1) |> show()
