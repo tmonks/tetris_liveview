@@ -28,7 +28,7 @@ defmodule Tetris.Game do
     valid =
       new_tetro
       |> Tetromino.show()
-      |> Points.valid?()
+      |> Points.valid?(game.junkyard)
 
     {old_tetro, new_tetro, valid}
   end
@@ -57,7 +57,6 @@ defmodule Tetris.Game do
       |> Tetromino.show()
       |> Enum.map(fn {x, y, shape} -> {{x, y}, shape} end)
       |> Enum.into(game.junkyard)
-      |> IO.inspect(label: "junkyard")
 
     %{game | junkyard: new_junkyard}
   end
