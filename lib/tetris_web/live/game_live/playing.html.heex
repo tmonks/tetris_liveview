@@ -5,7 +5,8 @@
 		<%= render_board(assigns) %>
 		<pre>
 			<%= inspect @game.tetro %>
-			<%= inspect @game.junkyard %>
+			junkyard: <%= inspect @game.junkyard %>
+			game over: <%= inspect @game.game_over %>
 		</pre>
 	</div>
 </section>
