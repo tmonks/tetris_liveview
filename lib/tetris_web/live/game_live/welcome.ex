@@ -1,4 +1,4 @@
-defmodule TetrisWeb.GameLive.GameOver do
+defmodule TetrisWeb.GameLive.Welcome do
   use TetrisWeb, :live_view
   alias Tetris.Game
 
@@ -13,9 +13,9 @@ defmodule TetrisWeb.GameLive.GameOver do
     ~H"""
       <section class="phx-hero">
         <div>
-          <h1>Game Over!</h1>
-          <h2>Your score: <%= @game.score %></h2>
-          <button phx-click="play">Play Again</button>
+          <h1>Welcome to TetrisLive!</h1>
+          <h2>Stack 'em up!</h2>
+          <button phx-click="play">Play</button>
         </div>
       </section>
     """

@@ -17,9 +17,10 @@ defmodule TetrisWeb.Router do
   scope "/", TetrisWeb do
     pipe_through :browser
 
-    get "/", PageController, :index
-    live "/game", GameLive.Playing, :playing
+    live "/game", GameLive.Welcome, :welcome
+    live "/game/playing", GameLive.Playing, :playing
     live "/game/over", GameLive.GameOver, :game_over
+    get "/", PageController, :index
   end
 
   # Other scopes may use custom stacks.
