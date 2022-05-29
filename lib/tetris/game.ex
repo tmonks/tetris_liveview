@@ -59,9 +59,35 @@ defmodule Tetris.Game do
       |> Tetromino.show()
       |> Enum.map(fn {x, y, shape} -> {{x, y}, shape} end)
       |> Enum.into(game.junkyard)
+      |> remove_complete_rows()
 
     %{game | junkyard: new_junkyard}
   end
+
+  defp find_complete_rows(junkyard) do
+    Map.keys(junkyard)
+    |> Enum.reduce(%{}, fn {_, y}, acc -> Map.update(acc, y, 1, &(&1 + 1)) end)
+    |> Map.filter(fn {_k, v} -> v == 10 end)
+    |> Map.keys()
+  end
+
+  defp remove_complete_rows(junkyard) do
+    complete_rows = find_complete_rows(junkyard) |> IO.inspect(label: "removing rows")
+    remove_complete_rows(junkyard, complete_rows)
+  end
+
+  defp remove_complete_rows(junkyard, [row | other_rows]) do
+    new_junkyard =
+      for {{x, y}, s} <- junkyard, y != row do
+        # drop any in row y, move anything higher down 1
+        if y < row, do: {{x, y + 1}, s}, else: {{x, y}, s}
+      end
+      |> Enum.into(%{})
+
+    remove_complete_rows(new_junkyard, other_rows)
+  end
+
+  defp remove_complete_rows(junkyard, []), do: junkyard
 
   def junkyard_points(game) do
     game.junkyard
