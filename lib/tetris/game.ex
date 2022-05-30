@@ -42,7 +42,6 @@ defmodule Tetris.Game do
   def move_down_or_merge(game, _old, new_tetro, true = _valid) do
     %{game | tetro: new_tetro}
     |> show()
-    |> inc_score(1)
   end
 
   def move_down_or_merge(game, old_tetro, _new, false = _valid) do
@@ -51,6 +50,7 @@ defmodule Tetris.Game do
     |> new_tetromino()
     |> show()
     |> check_game_over()
+    |> check_rows_and_score()
   end
 
   def merge(game, old_tetro) do
@@ -59,7 +59,6 @@ defmodule Tetris.Game do
       |> Tetromino.show()
       |> Enum.map(fn {x, y, shape} -> {{x, y}, shape} end)
       |> Enum.into(game.junkyard)
-      |> remove_complete_rows()
 
     %{game | junkyard: new_junkyard}
   end
@@ -71,9 +70,17 @@ defmodule Tetris.Game do
     |> Map.keys()
   end
 
-  defp remove_complete_rows(junkyard) do
-    complete_rows = find_complete_rows(junkyard) |> IO.inspect(label: "removing rows")
-    remove_complete_rows(junkyard, complete_rows)
+  defp check_rows_and_score(game) do
+    complete_rows = find_complete_rows(game.junkyard)
+
+    if length(complete_rows) > 0 do
+      new_junkyard = remove_complete_rows(game.junkyard, complete_rows)
+
+      %{game | junkyard: new_junkyard}
+      |> inc_score(length(complete_rows) * 10)
+    else
+      game
+    end
   end
 
   defp remove_complete_rows(junkyard, [row | other_rows]) do
