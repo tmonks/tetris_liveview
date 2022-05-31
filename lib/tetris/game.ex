@@ -49,8 +49,8 @@ defmodule Tetris.Game do
     |> merge(old_tetro)
     |> new_tetromino()
     |> show()
-    |> check_game_over()
     |> check_rows_and_score()
+    |> check_game_over()
   end
 
   def merge(game, old_tetro) do
@@ -63,6 +63,18 @@ defmodule Tetris.Game do
     %{game | junkyard: new_junkyard}
   end
 
+  defp check_rows_and_score(game) do
+    complete_rows = find_complete_rows(game.junkyard)
+
+    if length(complete_rows) > 0 do
+      game
+      |> remove_complete_rows(complete_rows)
+      |> inc_score(length(complete_rows) * 10)
+    else
+      game
+    end
+  end
+
   defp find_complete_rows(junkyard) do
     Map.keys(junkyard)
     |> Enum.reduce(%{}, fn {_, y}, acc -> Map.update(acc, y, 1, &(&1 + 1)) end)
@@ -70,31 +82,18 @@ defmodule Tetris.Game do
     |> Map.keys()
   end
 
-  defp check_rows_and_score(game) do
-    complete_rows = find_complete_rows(game.junkyard)
-
-    if length(complete_rows) > 0 do
-      new_junkyard = remove_complete_rows(game.junkyard, complete_rows)
-
-      %{game | junkyard: new_junkyard}
-      |> inc_score(length(complete_rows) * 10)
-    else
-      game
-    end
-  end
-
-  defp remove_complete_rows(junkyard, [row | other_rows]) do
+  defp remove_complete_rows(game, [row | other_rows]) do
     new_junkyard =
-      for {{x, y}, s} <- junkyard, y != row do
+      for {{x, y}, s} <- game.junkyard, y != row do
         # drop any in row y, move anything higher down 1
         if y < row, do: {{x, y + 1}, s}, else: {{x, y}, s}
       end
       |> Enum.into(%{})
 
-    remove_complete_rows(new_junkyard, other_rows)
+    remove_complete_rows(%{game | junkyard: new_junkyard}, other_rows)
   end
 
-  defp remove_complete_rows(junkyard, []), do: junkyard
+  defp remove_complete_rows(game, []), do: game
 
   def junkyard_points(game) do
     game.junkyard
