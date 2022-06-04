@@ -66,13 +66,9 @@ defmodule Tetris.Game do
   defp check_rows_and_score(game) do
     complete_rows = find_complete_rows(game.junkyard)
 
-    if length(complete_rows) > 0 do
-      game
-      |> remove_complete_rows(complete_rows)
-      |> inc_score(length(complete_rows) * 10)
-    else
-      game
-    end
+    game
+    |> remove_complete_rows(complete_rows)
+    |> inc_score(length(complete_rows) * 10)
   end
 
   defp find_complete_rows(junkyard) do
