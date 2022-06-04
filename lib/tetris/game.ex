@@ -68,7 +68,21 @@ defmodule Tetris.Game do
 
     game
     |> remove_complete_rows(complete_rows)
-    |> inc_score(length(complete_rows) * 10)
+    |> score_rows(complete_rows)
+  end
+
+  defp score_rows(game, []), do: game
+
+  defp score_rows(game, complete_rows) do
+    new_points =
+      case length(complete_rows) do
+        1 -> 40
+        2 -> 100
+        3 -> 300
+        4 -> 1200
+      end
+
+    %{game | score: game.score + new_points}
   end
 
   defp find_complete_rows(junkyard) do
