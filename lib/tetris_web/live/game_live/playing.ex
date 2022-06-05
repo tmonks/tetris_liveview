@@ -3,11 +3,13 @@ defmodule TetrisWeb.GameLive.Playing do
   alias Tetris.Game
 
   def mount(_params, _session, socket) do
-    if connected?(socket) do
-      :timer.send_interval(250, :tick)
-    end
+    {:ok, timer} = :timer.send_interval(250, self(), :tick)
 
-    {:ok, new_game(socket)}
+    {:ok,
+     socket
+     |> assign(:paused, false)
+     |> assign(:timer, timer)
+     |> new_game()}
   end
 
   defp render_board(assigns) do
@@ -84,6 +86,19 @@ defmodule TetrisWeb.GameLive.Playing do
 
   def handle_event("keystroke", %{"key" => "ArrowLeft"}, socket) do
     {:noreply, socket |> left()}
+  end
+
+  def handle_event("keystroke", %{"key" => "p"}, socket) do
+    socket =
+      if socket.assigns.paused do
+        {:ok, timer} = :timer.send_interval(250, self(), :tick)
+        assign(socket, timer: timer, paused: false)
+      else
+        :timer.cancel(socket.assigns.timer)
+        assign(socket, timer: nil, paused: true)
+      end
+
+    {:noreply, socket}
   end
 
   def handle_event("keystroke", _, socket) do
