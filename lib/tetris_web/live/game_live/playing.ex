@@ -2,8 +2,6 @@ defmodule TetrisWeb.GameLive.Playing do
   use TetrisWeb, :live_view
   alias Tetris.Game
 
-  @rotate_keys ["ArrowDown", " "]
-
   def mount(_params, _session, socket) do
     if connected?(socket) do
       :timer.send_interval(250, :tick)
@@ -72,8 +70,12 @@ defmodule TetrisWeb.GameLive.Playing do
      |> maybe_end_game()}
   end
 
-  def handle_event("keystroke", %{"key" => key}, socket) when key in @rotate_keys do
+  def handle_event("keystroke", %{"key" => " "}, socket) do
     {:noreply, socket |> rotate()}
+  end
+
+  def handle_event("keystroke", %{"key" => "ArrowDown"}, socket) do
+    {:noreply, socket |> down()}
   end
 
   def handle_event("keystroke", %{"key" => "ArrowRight"}, socket) do
