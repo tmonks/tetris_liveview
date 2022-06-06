@@ -3,7 +3,7 @@ defmodule TetrisWeb.GameLive.Playing do
   alias Tetris.Game
 
   def mount(_params, _session, socket) do
-    {:ok, timer} = :timer.send_interval(250, self(), :tick)
+    {:ok, timer} = :timer.send_interval(500, self(), :tick)
 
     {:ok,
      socket
@@ -91,7 +91,7 @@ defmodule TetrisWeb.GameLive.Playing do
   def handle_event("keystroke", %{"key" => "p"}, socket) do
     socket =
       if socket.assigns.paused do
-        {:ok, timer} = :timer.send_interval(250, self(), :tick)
+        {:ok, timer} = :timer.send_interval(500, self(), :tick)
         assign(socket, timer: timer, paused: false)
       else
         :timer.cancel(socket.assigns.timer)
