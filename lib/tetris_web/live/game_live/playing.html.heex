@@ -1,6 +1,5 @@
 <section class="phx-hero">
 	<div phx-window-keydown="keystroke">
-		<h1>Welcome to Tetris</h1>
 		<%= if @paused do %><h2>PAUSED</h2><% end %>
 		<h2>Score: <%= @game.score %></h2>
 		<%= render_board(assigns) %>
