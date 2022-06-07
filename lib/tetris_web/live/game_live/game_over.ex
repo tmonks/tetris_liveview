@@ -18,7 +18,7 @@ defmodule TetrisWeb.GameLive.GameOver do
   end
 
   defp play(socket) do
-    push_redirect(socket, to: "/game/playing")
+    push_redirect(socket, to: Routes.game_playing_path(socket, :playing))
   end
 
   def handle_event("play", __data, socket) do
