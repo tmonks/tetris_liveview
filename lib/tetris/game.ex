@@ -1,5 +1,13 @@
 defmodule Tetris.Game do
-  defstruct [:tetro, points: [], score: 0, junkyard: %{}, game_over: false]
+  defstruct [
+    :tetro,
+    points: [],
+    score: 0,
+    junkyard: %{},
+    game_over: false,
+    lines_cleared: 0,
+    level: 1
+  ]
 
   alias Tetris.{Points, Tetromino}
 
@@ -100,7 +108,10 @@ defmodule Tetris.Game do
       end
       |> Enum.into(%{})
 
-    remove_complete_rows(%{game | junkyard: new_junkyard}, other_rows)
+    %{game | junkyard: new_junkyard}
+    |> inc_lines()
+    |> maybe_level_up()
+    |> remove_complete_rows(other_rows)
   end
 
   defp remove_complete_rows(game, []), do: game
@@ -126,6 +137,16 @@ defmodule Tetris.Game do
   def inc_score(game, value) do
     %{game | score: game.score + value}
   end
+
+  defp inc_lines(game) do
+    %{game | lines_cleared: game.lines_cleared + 1}
+  end
+
+  defp maybe_level_up(game) when rem(game.lines_cleared, 2) == 0 do
+    %{game | level: game.level + 1}
+  end
+
+  defp maybe_level_up(game), do: game
 
   def check_game_over(game) do
     continue =

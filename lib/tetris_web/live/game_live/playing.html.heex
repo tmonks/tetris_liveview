@@ -4,9 +4,8 @@
 		<h2>Score: <%= @game.score %></h2>
 		<%= render_board(assigns) %>
 		<pre>
-			<%= inspect @game.tetro %>
-			junkyard: <%= inspect @game.junkyard %>
-			game over: <%= inspect @game.game_over %>
+			lines_cleared: <%= inspect @game.lines_cleared %>
+			level: <%= inspect @game.level %>
 		</pre>
 	</div>
 </section>
