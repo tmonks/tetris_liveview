@@ -6,7 +6,7 @@ defmodule Tetris.Game do
     junkyard: %{},
     game_over: false,
     lines_cleared: 0,
-    level: 1
+    level: 8
   ]
 
   alias Tetris.{Points, Tetromino}

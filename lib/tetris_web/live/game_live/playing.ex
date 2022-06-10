@@ -2,14 +2,24 @@ defmodule TetrisWeb.GameLive.Playing do
   use TetrisWeb, :live_view
   alias Tetris.Game
 
-  def mount(_params, _session, socket) do
-    {:ok, timer} = :timer.send_interval(500, self(), :tick)
+  @start_interval 500
+  @end_interval 100
 
-    {:ok,
-     socket
-     |> assign(:paused, false)
-     |> assign(:timer, timer)
-     |> new_game()}
+  def mount(_params, _session, socket) do
+    socket =
+      socket
+      |> assign(:paused, false)
+      |> new_game()
+      |> start_timer()
+
+    {:ok, socket}
+  end
+
+  defp start_timer(socket) do
+    interval = get_interval(socket.assigns.game)
+    {:ok, timer} = :timer.send_interval(interval, self(), :tick)
+
+    assign(socket, :timer, timer)
   end
 
   defp render_board(assigns) do
@@ -91,7 +101,8 @@ defmodule TetrisWeb.GameLive.Playing do
   def handle_event("keystroke", %{"key" => "p"}, socket) do
     socket =
       if socket.assigns.paused do
-        {:ok, timer} = :timer.send_interval(500, self(), :tick)
+        interval = get_interval(socket.assigns.game)
+        {:ok, timer} = :timer.send_interval(interval, self(), :tick)
         assign(socket, timer: timer, paused: false)
       else
         :timer.cancel(socket.assigns.timer)
@@ -111,5 +122,10 @@ defmodule TetrisWeb.GameLive.Playing do
 
   defp maybe_end_game(socket) do
     socket
+  end
+
+  def get_interval(game) do
+    increment = (@start_interval - @end_interval) / 9
+    (@start_interval - (game.level - 1) * increment) |> round()
   end
 end
