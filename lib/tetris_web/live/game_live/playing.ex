@@ -6,6 +6,8 @@ defmodule TetrisWeb.GameLive.Playing do
   @end_interval 100
 
   def mount(_params, _session, socket) do
+    if connected?(socket), do: Game.subscribe()
+
     socket =
       socket
       |> assign(:paused, false)
@@ -80,6 +82,11 @@ defmodule TetrisWeb.GameLive.Playing do
      socket
      |> down()
      |> maybe_end_game()}
+  end
+
+  def handle_info({:level_up, level}, socket) do
+    IO.puts("Leveling up to #{level}!")
+    {:noreply, socket}
   end
 
   def handle_event("keystroke", %{"key" => " "}, socket) do

@@ -6,10 +6,12 @@ defmodule Tetris.Game do
     junkyard: %{},
     game_over: false,
     lines_cleared: 0,
-    level: 8
+    level: 1
   ]
 
   alias Tetris.{Points, Tetromino}
+
+  @topic inspect(__MODULE__)
 
   def new do
     __struct__()
@@ -144,6 +146,7 @@ defmodule Tetris.Game do
 
   defp maybe_level_up(game) when rem(game.lines_cleared, 2) == 0 do
     %{game | level: game.level + 1}
+    |> broadcast(:level_up)
   end
 
   defp maybe_level_up(game), do: game
@@ -155,5 +158,14 @@ defmodule Tetris.Game do
       |> Points.valid?(game.junkyard)
 
     %{game | game_over: !continue}
+  end
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Tetris.PubSub, @topic)
+  end
+
+  defp broadcast(game, :level_up) do
+    Phoenix.PubSub.broadcast(Tetris.PubSub, @topic, {:level_up, game.level})
+    game
   end
 end
