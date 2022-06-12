@@ -4,6 +4,7 @@ defmodule TetrisWeb.GameLive.Playing do
 
   @start_interval 500
   @end_interval 100
+  @point_size 30
 
   def mount(_params, _session, socket) do
     if connected?(socket), do: Game.subscribe()
@@ -11,6 +12,7 @@ defmodule TetrisWeb.GameLive.Playing do
     socket =
       socket
       |> assign(:paused, false)
+      |> assign(:point_size, @point_size)
       |> new_game()
       |> start_timer()
 
@@ -26,8 +28,8 @@ defmodule TetrisWeb.GameLive.Playing do
 
   defp render_board(assigns) do
     ~H"""
-    <svg width="200" height="400">
-      <rect width="200" height="400" style="fill:rgb(0,0,0);" />
+    <svg width={10 * @point_size} height={20 * @point_size}>
+      <rect width={10 * @point_size} height={20 * @point_size} style="fill:rgb(0,0,0);" />
       <%= render_points(assigns) %>
     </svg>
     """
@@ -37,8 +39,8 @@ defmodule TetrisWeb.GameLive.Playing do
     ~H"""
       <%= for {x, y, shape} <- @game.points ++ Game.junkyard_points(@game) do %>
         <rect
-          width="20" height="20"
-          x={(x-1) * 20} y={(y-1) * 20}
+          width={@point_size} height={@point_size}
+          x={(x-1) * @point_size} y={(y-1) * @point_size}
           style={"fill:#{color(shape)}"} />
       <% end %>
     """
