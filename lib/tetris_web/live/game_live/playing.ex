@@ -26,6 +26,11 @@ defmodule TetrisWeb.GameLive.Playing do
     assign(socket, :timer, timer)
   end
 
+  defp update_timer(socket) do
+    :timer.cancel(socket.assigns.timer)
+    socket |> start_timer()
+  end
+
   defp render_board(assigns) do
     ~H"""
     <svg width={10 * @point_size} height={20 * @point_size}>
@@ -86,9 +91,8 @@ defmodule TetrisWeb.GameLive.Playing do
      |> maybe_end_game()}
   end
 
-  def handle_info({:level_up, level}, socket) do
-    IO.puts("Leveling up to #{level}!")
-    {:noreply, socket}
+  def handle_info({:level_up, _level}, socket) do
+    {:noreply, socket |> update_timer()}
   end
 
   def handle_event("keystroke", %{"key" => " "}, socket) do
