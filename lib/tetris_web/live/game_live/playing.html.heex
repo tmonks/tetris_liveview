@@ -1,11 +1,12 @@
 <section class="phx-hero">
+	<h1>Tetris LV</h1>
 	<div phx-window-keydown="keystroke">
 		<%= if @paused do %><h2>PAUSED</h2><% end %>
-		<h2>Score: <%= @game.score %></h2>
 		<%= render_board(assigns) %>
+		<h3>Score: <%= @game.score %></h3>
+		<h3>Level: <%= @game.level %></h3>
 		<pre>
 			lines_cleared: <%= inspect @game.lines_cleared %>
-			level: <%= inspect @game.level %>
 		</pre>
 	</div>
 </section>

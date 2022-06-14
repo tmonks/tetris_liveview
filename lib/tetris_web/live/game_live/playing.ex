@@ -34,7 +34,7 @@ defmodule TetrisWeb.GameLive.Playing do
   defp render_board(assigns) do
     ~H"""
     <svg width={10 * @point_size} height={20 * @point_size}>
-      <rect width={10 * @point_size} height={20 * @point_size} style="fill:rgb(0,0,0);" />
+      <rect width={10 * @point_size} height={20 * @point_size} style="fill:rgb(50,50,50);" />
       <%= render_points(assigns) %>
     </svg>
     """
