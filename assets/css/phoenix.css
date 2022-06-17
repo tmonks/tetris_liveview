@@ -12,3 +12,15 @@ body {
   font-family: 'Press Start 2P', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
   text-align: center;
 }
+
+button {
+  font-size: 1.2em;
+  font-family: 'Press Start 2P', 'Helvetica Neue', 'Helvetica', 'Arial', sans-serif;
+  background-color: blue;
+  color: lightgray;
+  padding: .5em;
+}
+
+#paused {
+  color: red;
+}

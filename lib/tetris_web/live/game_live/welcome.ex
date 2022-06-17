@@ -14,7 +14,6 @@ defmodule TetrisWeb.GameLive.Welcome do
       <section class="phx-hero">
         <div>
           <h1>Welcome to TetrisLive!</h1>
-          <h2>Stack 'em up!</h2>
           <button phx-click="play">Play</button>
         </div>
       </section>
