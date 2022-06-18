@@ -57,5 +57,24 @@ defmodule Tetris.ScoresTest do
       score = score_fixture()
       assert %Ecto.Changeset{} = Scores.change_score(score)
     end
+
+    test "list_top_scores/1 lists the top n scores" do
+      score_fixture(%{value: 10})
+      score_fixture(%{value: 20})
+      score_fixture(%{value: 30})
+      score_fixture(%{value: 40})
+
+      top_scores = Scores.list_top_scores(3)
+      assert length(top_scores) == 3
+    end
+
+    test "list_top_scores/1 lists the scores in descending order" do
+      _score1 = score_fixture(%{value: 10})
+      score2 = score_fixture(%{value: 20})
+      score3 = score_fixture(%{value: 30})
+      score4 = score_fixture(%{value: 40})
+
+      assert [^score4, ^score3, ^score2] = Scores.list_top_scores(3)
+    end
   end
 end

@@ -101,4 +101,14 @@ defmodule Tetris.Scores do
   def change_score(%Score{} = score, attrs \\ %{}) do
     Score.changeset(score, attrs)
   end
+
+  @doc """
+  Lists top n scores
+  """
+  def list_top_scores(n \\ 10) do
+    Score
+    |> order_by(desc: :value)
+    |> limit(^n)
+    |> Repo.all()
+  end
 end
