@@ -1,8 +1,13 @@
 defmodule TetrisWeb.GameLive.GameOver do
   use TetrisWeb, :live_view
 
+  alias Tetris.Scores
+
   def mount(params, _session, socket) do
-    {:ok, assign(socket, score: params["score"])}
+    {:ok,
+     socket
+     |> assign(score: params["score"])
+     |> assign(top_scores: Scores.list_top_scores(10))}
   end
 
   def render(assigns) do
@@ -11,6 +16,10 @@ defmodule TetrisWeb.GameLive.GameOver do
         <div>
           <h1>Game Over!</h1>
           <h2>Your score: <%= @score %></h2>
+          <h2>Top scores:</h2>
+          <%= for score <- @top_scores do %>
+            <p><%= "#{score.player} - #{score.value}" %></p>
+          <% end %>
           <button phx-click="play">Play Again</button>
         </div>
       </section>
