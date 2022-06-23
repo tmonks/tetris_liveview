@@ -1,5 +1,5 @@
 defmodule Tetris.Scores.Score do
-  use Ecto.Schema
+  use Tetris.Schema
   import Ecto.Changeset
 
   schema "scores" do
@@ -13,6 +13,6 @@ defmodule Tetris.Scores.Score do
   def changeset(score, attrs) do
     score
     |> cast(attrs, [:value, :player])
-    |> validate_required([:value, :player])
+    |> validate_required([:value])
   end
 end
