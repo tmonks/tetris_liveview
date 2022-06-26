@@ -2,13 +2,14 @@ defmodule TetrisWeb.GameLive.GameOver do
   use TetrisWeb, :live_view
 
   alias Tetris.Scores
-  alias Tetris.Scores.Score
 
   def mount(params, _session, socket) do
+    score = Scores.get_score!(params["score"])
+
     {:ok,
      socket
-     |> assign(score: params["score"])
-     |> assign(score_changeset: Scores.change_score(%Score{}))
+     |> assign(score: score)
+     |> assign(score_changeset: Scores.change_score(score))
      |> assign(top_scores: Scores.list_top_scores(10))}
   end
 
@@ -16,19 +17,26 @@ defmodule TetrisWeb.GameLive.GameOver do
     ~H"""
       <section class="phx-hero">
         <div>
-          <h1>Game Over!</h1>
-          <h2>Your score: <%= @score %></h2>
-          <div>
-            <.form for={@score_changeset} let={f} phx-submit="save_score">
-              Enter your name: <%= text_input f, :player %>
-              <br />
-              <%= submit "Save" %>
-            </.form>
-          </div>
-          <h2>Top scores:</h2>
-          <%= for score <- @top_scores do %>
-            <p><%= "#{score.player} - #{score.value}" %></p>
+          <h1 style="padding-bottom: 2em">GAME OVER</h1>
+          <h2>Congratulations, you have a new high score!</h2>
+          <%= if new_high_score?(@score, @top_scores) do %>
+            <div style="padding-bottom: 2em">
+              <.form for={@score_changeset} let={f} phx-submit="save_score">
+                Enter your name: <%= text_input f, :player %>
+                <%= submit "Save" %>
+              </.form>
+            </div>
           <% end %>
+          <div style="padding-bottom: 2em;">
+            <h2>Top 10</h2>
+            <%= for {score, index} <- Enum.with_index(@top_scores) do %>
+              <%= if score == @score do %>
+                <p><%= "#{index + 1} - #{score.value} - #{score.player}" %></p>
+              <% else %>
+                <p style="color: red"><%= "#{index + 1} - #{score.value} - #{score.player}" %></p>
+              <% end %>
+            <% end %>
+          </div>
           <button phx-click="play">Play Again</button>
         </div>
       </section>
@@ -51,5 +59,9 @@ defmodule TetrisWeb.GameLive.GameOver do
 
     top_scores = Scores.list_top_scores(10)
     {:noreply, assign(socket, :top_scores, top_scores)}
+  end
+
+  defp new_high_score?(score, top_scores) do
+    score in top_scores
   end
 end

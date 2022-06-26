@@ -1,6 +1,6 @@
 defmodule TetrisWeb.GameLive.Playing do
   use TetrisWeb, :live_view
-  alias Tetris.Game
+  alias Tetris.{Game, Scores}
 
   @start_interval 500
   @end_interval 100
@@ -130,7 +130,8 @@ defmodule TetrisWeb.GameLive.Playing do
   end
 
   defp maybe_end_game(%{assigns: %{game: %{game_over: true, score: score}}} = socket) do
-    push_redirect(socket, to: Routes.game_game_over_path(socket, :game_over, score: score))
+    {:ok, score} = Scores.create_score(%{value: score})
+    push_redirect(socket, to: Routes.game_game_over_path(socket, :game_over, score: score.id))
   end
 
   defp maybe_end_game(socket) do
